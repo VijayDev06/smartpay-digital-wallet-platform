@@ -12,6 +12,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,14 +22,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Slf4j
 public class User {
 
 	@Id
@@ -50,15 +49,15 @@ public class User {
 	@Column(name = "last_name", length = 100, nullable = false)
 	private String lastName;
 	
-	@ManyToOne
-	//@ToString.Exclude
-	@JoinColumn(name = "role_Id", referencedColumnName = "id", nullable = false)
-	private Role role;
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	//@ToString.Exclude
+//	@JoinColumn(name = "role_Id", referencedColumnName = "id", nullable = false)
+//	private Role role;
 
 	@Column(name = "mobile_number", length = 20, nullable = false, unique = true)
 	private String mobileNumber;
 
-	@Column(name = "password")
+	@Column(name = "password", nullable = false, length = 255)
 	private String password;
 
 	@Enumerated(EnumType.STRING)

@@ -1,21 +1,40 @@
 spring:
   application:
     name: USER-SERVICE
+  datasource:
+    url: jdbc:mysql://localhost:3306/SmartPayWallet?createDatabaseIfNotExist=true
+    username: root
+    password: Root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
     
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+
+        
 server:
-  port: 8762
+  port: 7001
   
 management:
   endpoints:
     web:
       exposure:
-        include: "*"
-  
+        include: health,info,prometheus
+          
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka/
+     
+      instance:
+        prefer-ip-address: true
+      
+logging:
+  level:
+    root: INFO
       
       

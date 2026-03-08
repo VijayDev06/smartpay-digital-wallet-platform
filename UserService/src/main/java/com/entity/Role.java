@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.enums.RoleEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -21,14 +22,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Slf4j
 public class Role {
 	
 	@Id
@@ -39,10 +38,10 @@ public class Role {
 	@Column(unique = true, nullable = false)
 	private RoleEnum rolename;
 	
-	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "role")
-	//@ToString.Exclude  // To prevemt stack overflow
-	@JsonIgnore
-	private List<User> user; //@JsonIgnore --> prevents circular JSON
+//	@OneToMany(mappedBy = "role")
+//	//@ToString.Exclude  // To prevemt stack overflow
+//	@JsonIgnore
+//	private List<User> users; //@JsonIgnore --> prevents circular JSON
 	
 	@Column(name = "description", nullable = false)
 	private String description;
@@ -51,7 +50,7 @@ public class Role {
 	@Column(name = "created_At", nullable = false)
 	private Instant createdAt;
 	
-	@CreationTimestamp
+	@UpdateTimestamp
 	@Column(name = "updated_At", nullable = false)
 	private Instant updatedAt;
 
