@@ -38,10 +38,10 @@ public class Role {
 	@Column(unique = true, nullable = false)
 	private RoleEnum rolename;
 	
-//	@OneToMany(mappedBy = "role")
-//	//@ToString.Exclude  // To prevemt stack overflow
-//	@JsonIgnore
-//	private List<User> users; //@JsonIgnore --> prevents circular JSON
+	@OneToMany(mappedBy = "role")
+	//@ToString.Exclude  // To prevemt stack overflow
+	@JsonIgnore
+	private List<User> users; //@JsonIgnore --> prevents circular JSON
 	
 	@Column(name = "description", nullable = false)
 	private String description;

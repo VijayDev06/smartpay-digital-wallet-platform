@@ -48,7 +48,13 @@ public class AuthenticationServiceImpl implements AuthenticationService{
 		user.setKycStatus(KycStatusEnum.PENDING);
 		user.setStatus(UserStatusEnum.INACTIVE);
 		
+		Role role = rr.findByRolename(RoleEnum.USER).get();
+		
+		user.setRole(role);
+		
 		User savedUser = ur.save(user);
+		
+	
 		
 		UserResponse uResponse = model.map(savedUser, UserResponse.class);
 		

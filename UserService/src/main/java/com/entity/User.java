@@ -49,10 +49,10 @@ public class User {
 	@Column(name = "last_name", length = 100, nullable = false)
 	private String lastName;
 	
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	//@ToString.Exclude
-//	@JoinColumn(name = "role_Id", referencedColumnName = "id", nullable = false)
-//	private Role role;
+	@ManyToOne(fetch = FetchType.LAZY)
+	//@ToString.Exclude
+	@JoinColumn(name = "role_Id", nullable = false)
+	private Role role;
 
 	@Column(name = "mobile_number", length = 20, nullable = false, unique = true)
 	private String mobileNumber;
