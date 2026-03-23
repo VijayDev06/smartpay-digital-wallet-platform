@@ -2,11 +2,16 @@ package com.entity;
 
 import com.enums.KycStatusEnum;
 import com.enums.UserStatusEnum;
+import com.security.CustomUserService;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,13 +27,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class User {
+@Slf4j
+public class User implements CustomUserService{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,7 +56,7 @@ public class User {
 	@Column(name = "last_name", length = 100, nullable = false)
 	private String lastName;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	//@ToString.Exclude
 	@JoinColumn(name = "role_Id", nullable = false)
 	private Role role;
@@ -75,4 +82,40 @@ public class User {
 	@UpdateTimestamp
 	@Column(name = "updated_at", nullable = false)
 	private LocalDateTime updatedAt;
+
+	//UserDetails implemenmted methods
+		@Override
+		public Collection<? extends GrantedAuthority> getAuthorities() {
+			log.debug("getAuthorities()");
+			SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.getRolename().toString());
+			return Collections.singletonList(authority);
+		}
+		
+		@Override
+		public boolean isAccountNonExpired() {
+			log.debug("isAccountNonExpired()");
+			return true;
+		}
+
+		@Override
+		public boolean isAccountNonLocked() {
+			log.debug("isAccountNonLocked()");
+			return true;
+		}
+
+		@Override
+		public boolean isCredentialsNonExpired() {
+			log.debug("isCredentialsNonExpired()");
+			return true;
+		}
+
+		@Override
+		public boolean isEnabled() {
+			log.debug("isEnabled()");
+			
+		//	return true;
+			
+		    return status == UserStatusEnum.ACTIVE;
+
+		}
 }

@@ -48,7 +48,9 @@ public class AuthenticationServiceImpl implements AuthenticationService{
 		user.setKycStatus(KycStatusEnum.PENDING);
 		user.setStatus(UserStatusEnum.INACTIVE);
 		
-		Role role = rr.findByRolename(RoleEnum.USER).get();
+		Role role = rr.findByRolename(RoleEnum.USER)
+				.orElseThrow(()
+						-> new ResourceNotFoundException("Default role not found"));
 		
 		user.setRole(role);
 		
