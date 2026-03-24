@@ -21,8 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class Appconfig {
 	
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
 	@Bean
 	UserDetailsService userDetailsService() {
@@ -36,22 +35,22 @@ public class Appconfig {
 	}
 
 	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+	AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
 		if (config == null) {
 			log.warn("Authentication configuration is null");
 		}
 		return config.getAuthenticationManager();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Bean
 	AuthenticationProvider authenticationProvider() {
-		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+	    DaoAuthenticationProvider authProvider =
+	            new DaoAuthenticationProvider(userDetailsService());
 
-		authProvider.setUserDetailsService(userDetailsService());
-		authProvider.setPasswordEncoder(passwordEncoder());
+	//  authProvider.setUserDetailsService(userDetailsService());
+	    authProvider.setPasswordEncoder(passwordEncoder());
 
-		return authProvider;
+	    return authProvider;
 	}
 
 }
