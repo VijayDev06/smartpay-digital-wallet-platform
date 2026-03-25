@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dto.LoginRequest;
+import com.dto.LoginResponse;
 import com.dto.RegisterRequest;
 import com.dto.UserResponse;
 import com.service.AuthenticationService;
@@ -36,8 +38,19 @@ public class AuthenticationController {
 		log.info("Signup request received for email: {}", registerRequest.getEmail());
 		log.info("Done gone");
 		
-		return ResponseEntity.status(HttpStatus.CREATED)
+		return ResponseEntity.status(HttpStatus.CREATED)    // 201
 				.body(authService.registerUser(registerRequest));
+		
+	}
+	
+	@Operation(summary = "Login existing user", description = "Login a new user with details.")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "User Logged in successfully"),
+	@ApiResponse(responseCode = "400", description = "Unauthorised - Invalid Credential" ) })
+	@PostMapping("/login")
+	public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest loginRequest){
+		log.info("LOGIN API HIT");
+		log.debug("authenticated{}", loginRequest.getEmail());
+		return new ResponseEntity<>(authService.authenticate(loginRequest), HttpStatus.OK);
 		
 	}
 	

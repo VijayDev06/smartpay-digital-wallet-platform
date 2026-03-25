@@ -40,10 +40,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	@Autowired
 	private final UserDetailsService userDetailsService;
-
+	
 	@Autowired
-	private final TokenBlacklistService blacklistService;
-
+    private final TokenBlacklistService blacklistService;
+	
 	@Autowired
 	private final HandlerExceptionResolver handlerExceptionResolver;
 
@@ -71,7 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // Tocken is saved
 																									// here on server
 																									// side
-			// blacklistService.isTokenBlacklisted(userEmail);
+		//    blacklistService.isTokenBlacklisted(userEmail);
 			if (userEmail != null && authentication == null) {
 				log.info("No existing authentication header");
 				UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);

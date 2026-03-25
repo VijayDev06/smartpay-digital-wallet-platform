@@ -1,9 +1,5 @@
 package com.entity;
 
-import com.enums.KycStatusEnum;
-import com.enums.UserStatusEnum;
-import com.security.CustomUserService;
-
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,11 +9,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import com.enums.KycStatusEnum;
+import com.enums.UserStatusEnum;
+import com.security.CustomUserService;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,6 +26,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 @Entity
@@ -36,12 +36,12 @@ import lombok.extern.slf4j.Slf4j;
 @Builder
 @Slf4j
 public class User implements CustomUserService{
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name = "username", nullable = false, unique = true)
+	@Column(name = "username", nullable = false)
 	private String username;
 
 	@Column(name = "email", nullable = false, unique = true)
@@ -56,15 +56,15 @@ public class User implements CustomUserService{
 	@Column(name = "last_name", length = 100, nullable = false)
 	private String lastName;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	//@ToString.Exclude
-	@JoinColumn(name = "role_Id", nullable = false)
+	@ManyToOne
+	@ToString.Exclude
+	@JoinColumn(name = "role_Id", referencedColumnName = "id", nullable = false)
 	private Role role;
 
-	@Column(name = "mobile_number", length = 20, nullable = false, unique = true)
+	@Column(name = "mobile_number", length = 20, nullable = false)
 	private String mobileNumber;
 
-	@Column(name = "password", nullable = false, length = 255)
+	@Column(name = "password")
 	private String password;
 
 	@Enumerated(EnumType.STRING)
@@ -82,40 +82,39 @@ public class User implements CustomUserService{
 	@UpdateTimestamp
 	@Column(name = "updated_at", nullable = false)
 	private LocalDateTime updatedAt;
-
+	
 	//UserDetails implemenmted methods
-		@Override
-		public Collection<? extends GrantedAuthority> getAuthorities() {
-			log.debug("getAuthorities()");
-			SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.getRolename().toString());
-			return Collections.singletonList(authority);
-		}
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		log.debug("getAuthorities()");
+		SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.getRolename().toString());
+		return Collections.singletonList(authority);
+	}
+	
+	@Override
+	public boolean isAccountNonExpired() {
+		log.debug("isAccountNonExpired()");
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		log.debug("isAccountNonLocked()");
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		log.debug("isCredentialsNonExpired()");
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		log.debug("isEnabled()");
+	//	return true;
 		
-		@Override
-		public boolean isAccountNonExpired() {
-			log.debug("isAccountNonExpired()");
-			return true;
-		}
+		return status == UserStatusEnum.ACTIVE;
+	}
 
-		@Override
-		public boolean isAccountNonLocked() {
-			log.debug("isAccountNonLocked()");
-			return true;
-		}
-
-		@Override
-		public boolean isCredentialsNonExpired() {
-			log.debug("isCredentialsNonExpired()");
-			return true;
-		}
-
-		@Override
-		public boolean isEnabled() {
-			log.debug("isEnabled()");
-			
-		//	return true;
-			
-		    return status == UserStatusEnum.ACTIVE;
-
-		}
 }
